@@ -1,3 +1,6 @@
 import androidx.compose.ui.window.ComposeUIViewController
+import database.getAppDatabase
+import database.getDatabaseBuilder
 
-fun MainViewController() = ComposeUIViewController { App() }
+@Suppress("unused", "FunctionName")
+fun MainViewController() = ComposeUIViewController { App(getDatabaseBuilder().getAppDatabase()) }
