@@ -89,6 +89,10 @@ android {
     }
 }
 
+composeCompiler {
+    enableStrongSkippingMode = true
+}
+
 dependencies {
     add("kspAndroid", libs.room.compiler)
     add("kspCommonMainMetadata", libs.room.compiler)
