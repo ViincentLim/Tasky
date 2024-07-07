@@ -48,6 +48,7 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
+            implementation(libs.kotlinx.datetime)
         }
     }
 }
