@@ -10,6 +10,7 @@ data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val description: String? = null,
+    val completed: Boolean = false,
     val startAt: Instant? = null,
     val endAt: Instant? = null,
     val reminderAt: Instant? = null,
