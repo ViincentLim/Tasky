@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -19,9 +20,7 @@ kotlin {
     }
 
     listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
+        iosX64(), iosArm64(), iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -34,6 +33,9 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.room.runtime.android)
+
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
         }
         iosMain {
             // Fixes Room error: Unresolved reference 'instantiateImpl'
@@ -46,9 +48,14 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
+
             implementation(libs.kotlinx.datetime)
+
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
         }
     }
 }
@@ -99,7 +106,7 @@ dependencies {
     add("kspCommonMainMetadata", libs.room.compiler)
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach {
+tasks.withType<KotlinCompile>().configureEach {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
