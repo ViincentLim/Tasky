@@ -21,8 +21,8 @@ import ui.TaskItemView
 @Preview
 fun App(database: AppDatabase) {
     val tasksDao = remember { database.getTasksDao() }
-    val pendingTasks by remember { tasksDao.getPendingTasks() }.collectAsState(emptyList())
-    val completedTasks by remember { tasksDao.getCompletedTasks() }.collectAsState(emptyList())
+    val pendingTasks by remember { tasksDao.getTasks(completed = false) }.collectAsState(emptyList())
+    val completedTasks by remember { tasksDao.getTasks(completed = true) }.collectAsState(emptyList())
     val coroutineScopeIO = CoroutineScope(Dispatchers.IO)
 
     MaterialTheme {

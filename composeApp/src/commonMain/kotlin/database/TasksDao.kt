@@ -11,14 +11,8 @@ import model.Task
 
 @Dao
 interface TasksDao {
-    @Query("SELECT * FROM task WHERE completed==0")
-    fun getPendingTasks(): Flow<List<Task>>
-
-    @Query("SELECT * FROM task WHERE completed==1")
-    fun getCompletedTasks(): Flow<List<Task>>
-
-    @Query("SELECT * FROM task")
-    fun getAll(): Flow<List<Task>>
+    @Query("SELECT * FROM task WHERE completed == :completed")
+    fun getTasks(completed: Boolean): Flow<List<Task>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(task: Task)
