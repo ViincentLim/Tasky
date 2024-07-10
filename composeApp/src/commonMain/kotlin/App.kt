@@ -14,15 +14,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 import ui.TaskInputBar
 import ui.TaskItemView
 
 @Composable
 @Preview
-fun App(database: AppDatabase) {
+fun App(database: AppDatabase = koinInject<AppDatabase>()) {
     val tasksDao = remember { database.getTasksDao() }
-    val pendingTasks by remember { tasksDao.getTasks(completed = false) }.collectAsState(emptyList())
-    val completedTasks by remember { tasksDao.getTasks(completed = true) }.collectAsState(emptyList())
+    val pendingTasks by remember { tasksDao.getTasks(completed = false) }.collectAsState(
+        emptyList()
+    )
+    val completedTasks by remember { tasksDao.getTasks(completed = true) }.collectAsState(
+        emptyList()
+    )
     val coroutineScopeIO = CoroutineScope(Dispatchers.IO)
 
     MaterialTheme {
@@ -35,8 +40,7 @@ fun App(database: AppDatabase) {
                         onComplete = {
                             task.completed = true
                             coroutineScopeIO.launch { tasksDao.update(task) }
-                        }
-                    )
+                        })
                 }
                 // Completed tasks
                 // TODO: Put this in an accordion
