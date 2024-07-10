@@ -14,41 +14,38 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ui.CreateTaskRow
+import ui.TaskInputBar
 import ui.TaskItemView
 
 @Composable
 @Preview
 fun App(database: AppDatabase) {
     val tasksDao = remember { database.getTasksDao() }
-    val tasks by remember { tasksDao.getPendingTasks() }.collectAsState(emptyList())
-    val completedtasks by remember { tasksDao.getCompletedTasks() }.collectAsState(emptyList())
+    val pendingTasks by remember { tasksDao.getPendingTasks() }.collectAsState(emptyList())
+    val completedTasks by remember { tasksDao.getCompletedTasks() }.collectAsState(emptyList())
     val coroutineScopeIO = CoroutineScope(Dispatchers.IO)
 
     MaterialTheme {
         Column(Modifier.safeDrawingPadding()) {
-
-            //NON-COMPLETED TASKS ONLY
             LazyColumn(Modifier.weight(1f)) {
-                items(items = tasks, key = { it.id })
-                { task -> TaskItemView(
-                        task = task,
+                // Pending tasks
+                items(items = pendingTasks, key = { it.id }) { task ->
+                    TaskItemView(task = task,
                         onDelete = { coroutineScopeIO.launch { tasksDao.delete(task) } },
                         onComplete = {
-                            task.completed=true
+                            task.completed = true
                             coroutineScopeIO.launch { tasksDao.update(task) }
-                        } //if this doesnt work just update completed=1 manually
-                    ) }
+                        }
+                    )
+                }
+                // Completed tasks
+                // TODO: Put this in an accordion
+                items(items = completedTasks, key = { it.id }) {
+                    // TODO: Implement TaskItemView for completed tasks
+                }
             }
 
-            //SHOW COMPLETED TASKS
-            //TO DO (use completedtasks)
-
-
-
-
-            //TYPING INPUT BAR
-            CreateTaskRow(onCreateTask = { task ->
+            TaskInputBar(onCreateTask = { task ->
                 coroutineScopeIO.launch {
                     tasksDao.insert(task)
                 }

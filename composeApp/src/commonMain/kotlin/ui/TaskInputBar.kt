@@ -27,9 +27,9 @@ import androidx.compose.ui.unit.sp
 import model.Task
 
 @Composable
-fun CreateTaskRow(
+fun TaskInputBar(
     onCreateTask: (Task) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var taskName by remember { mutableStateOf("") }
 
@@ -58,7 +58,7 @@ private fun TaskNameTextField(
     taskName: String,
     onTaskNameChange: (String) -> Unit,
     onDone: KeyboardActionScope.() -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     OutlinedTextField(
         value = taskName,
@@ -76,7 +76,7 @@ private fun TaskNameTextField(
 
 @Composable
 private fun CreateTaskButton(
-    onClick: () -> Unit, modifier: Modifier = Modifier
+    onClick: () -> Unit, modifier: Modifier = Modifier,
 ) {
     IconButton(
         onClick = onClick, modifier = modifier

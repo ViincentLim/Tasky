@@ -5,6 +5,14 @@ import androidx.room.PrimaryKey
 import kotlinx.datetime.Instant
 import kotlin.time.Duration
 
+/**
+ * Converts an Instant to a formatted string.
+ */
+fun Instant.toFormattedString(): String {
+    // TODO: Implement this function
+    return ""
+}
+
 @Entity
 data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -18,24 +26,11 @@ data class Task(
     val duration: Duration?
         get() = startAt?.let { endAt?.minus(startAt) }
 
-
-
-    private fun instToStr(instant:Instant?): String {
-        return ""//FOR CONVERSION OF STARTAT & ENDAT
-    }
-    val taskTileFormattedTime: String
+    val formattedTime: String
         get() {
-            if (startAt!=null) {
-                //ONLY STARTAT
-                if (endAt==null){ return instToStr(startAt)}
-
-                //STARTAT to ENDAT
-                else {return instToStr(startAt)+" to "+instToStr(endAt)}
-            }
-            //ONLY ENDAT
-            else if (endAt!=null){ return "Ends "+instToStr(endAt) }
-            return ""
+            if (startAt == null && endAt == null) return ""
+            if (endAt == null) return startAt!!.toFormattedString()
+            if (startAt == null) return "from ${endAt.toFormattedString()}"
+            return "${startAt.toFormattedString()} to ${endAt.toFormattedString()}"
         }
-
-
 }
