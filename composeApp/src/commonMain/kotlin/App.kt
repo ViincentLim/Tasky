@@ -8,20 +8,24 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import database.AppDatabase
+import database.TasksDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
+import services.notification.PlatformNotificationOptions
+import services.notification.scheduleNotification
 import ui.TaskInputBar
 import ui.TaskItemView
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 @Preview
-fun App(database: AppDatabase = koinInject<AppDatabase>()) {
-    val tasksDao = remember { database.getTasksDao() }
+fun App(tasksDao: TasksDao = koinInject()) {
     val pendingTasks by remember { tasksDao.getTasks(completed = false) }.collectAsState(
         emptyList()
     )
@@ -29,6 +33,7 @@ fun App(database: AppDatabase = koinInject<AppDatabase>()) {
         emptyList()
     )
     val coroutineScopeIO = CoroutineScope(Dispatchers.IO)
+    val coroutineScopeMain = CoroutineScope(Dispatchers.Main)
 
     MaterialTheme {
         Column(Modifier.safeDrawingPadding()) {
