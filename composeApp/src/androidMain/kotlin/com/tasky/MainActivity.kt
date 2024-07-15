@@ -1,6 +1,7 @@
 package com.tasky
 
 import App
+import android.app.NotificationManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +16,8 @@ import org.koin.compose.KoinApplication
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+import services.notification.createNotificationChannel
+import services.permission.checkAndRequestPermissions
 
 val androidModule = module { single { getDatabaseBuilder(get()).getAppDatabase() } }
 
@@ -33,6 +36,13 @@ class MainActivity : ComponentActivity() {
                     commonModule
                 )
             }) {
+                checkAndRequestPermissions(this@MainActivity)
+                createNotificationChannel(
+                    "reminder",
+                    "Reminder",
+                    "Notifications for reminders",
+                    NotificationManager.IMPORTANCE_HIGH
+                )
                 App()
             }
         }
