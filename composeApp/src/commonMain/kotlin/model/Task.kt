@@ -18,22 +18,22 @@ import kotlin.time.Duration
 @Entity
 data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val name: String,
-    val description: String? = null,
+    var name: String,
+    var description: String? = null,
     var completed: Boolean = false,
-    val startAt: Instant? = null,
-    val endAt: Instant? = null,
-    val reminderAt: Instant? = null,
+    var startAt: Instant? = null,
+    var endAt: Instant? = null,
+    var reminderAt: Instant? = null,
 ) {
     val duration: Duration?
-        get() = startAt?.let { endAt?.minus(startAt) }
+        get() = startAt?.let { endAt?.minus(startAt!!) }
 
     val formattedTime: String
         get() {
             if (startAt == null && endAt == null) return ""
             if (endAt == null) return "starts ${startAt!!.toFormattedString()}"
-            if (startAt == null) return "ends ${endAt.toFormattedString()}"
-            return "${startAt.toFormattedString()} to ${endAt.toFormattedString()}"
+            if (startAt == null) return "ends ${endAt!!.toFormattedString()}"
+            return "${startAt!!.toFormattedString()} to ${endAt!!.toFormattedString()}"
         }
 }
 

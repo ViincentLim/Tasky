@@ -8,10 +8,12 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -35,6 +37,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -59,6 +62,7 @@ fun LazyItemScope.TaskItemView(
     task: Task,
     onDelete: () -> Unit,
     onComplete: () -> Unit,
+    onDisplayInfo: (Int) -> Unit,
 ) {
     var boxSize by remember { mutableFloatStateOf(0f)}
     val scope = rememberCoroutineScope()
@@ -117,7 +121,23 @@ fun LazyItemScope.TaskItemView(
                 .anchoredDraggable(state, Orientation.Horizontal)
                 .background(Color.LightGray)
                 .border(2.dp,  Color.White)
-            ){ MainTileRow(onComplete, task) }
+            ){
+                //TODO: find a way for this to affect the animated visibility in App.kt
+                Box(modifier = Modifier
+                    .fillMaxHeight()
+                    .align(Alignment.Center)
+                    .offset(x = 12.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = {onDisplayInfo(task.id)}
+                    )
+//                    .border(2.dp, Color.Cyan) //for debug
+                    .padding(155.dp)
+
+                )
+                MainTileRow(onComplete, task)
+            }
         }
 
     }
@@ -151,7 +171,11 @@ private fun BoxScope.MainTileRow(onComplete: () -> Unit, task: Task){
     ) {
         Checkbox(onComplete)
         NameTimeColumn(task)
-        if (task.reminderAt != null) BellIcon(Modifier.align(Alignment.CenterVertically))
+        if (task.reminderAt != null) {
+            BellIcon(modifier = Modifier
+//                .border(2.dp, Color.Red) //for debug
+                .align(Alignment.CenterVertically))
+        }
     }
 }
 
@@ -171,7 +195,6 @@ private fun RowScope.Checkbox(onComplete: () -> Unit) {
 
 @Composable
 private fun RowScope.NameTimeColumn(task: Task) {
-    //TODO: add box button that brings in the fullscreen task details edit view
     Column(
         Modifier.Companion.weight(1f).fillMaxHeight().align(Alignment.CenterVertically)
     ) {

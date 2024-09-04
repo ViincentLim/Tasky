@@ -37,6 +37,7 @@ kotlin {
 
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
+            implementation(libs.androidx.material3)
         }
         iosMain {
             // Fixes Room error: Unresolved reference 'instantiateImpl'
@@ -54,6 +55,7 @@ kotlin {
             implementation(libs.sqlite.bundled)
 
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kmp.date.time.picker)
 
             api(libs.koin.core)
             implementation(libs.koin.compose)
@@ -103,6 +105,8 @@ composeCompiler {
 }
 
 dependencies {
+    implementation(libs.androidx.media3.common)
+    implementation(libs.androidx.material3.android)
     add("kspAndroid", libs.room.compiler)
     add("kspCommonMainMetadata", libs.room.compiler)
 }

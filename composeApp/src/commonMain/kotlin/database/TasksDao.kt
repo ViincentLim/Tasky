@@ -14,6 +14,9 @@ interface TasksDao {
     @Query("SELECT * FROM task WHERE completed == :completed")
     fun getTasks(completed: Boolean): Flow<List<Task>>
 
+    @Query("SELECT * FROM task WHERE id == :taskID")
+    suspend fun getTaskbyID(taskID:Int): Task
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(task: Task)
 
